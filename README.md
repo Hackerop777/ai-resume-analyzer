@@ -23,7 +23,8 @@ Job seekers and candidates struggle to understand why their resumes fail applica
 
 ### 2. ⚡ 5ms Zero-Token Deterministic ATS Audit
 - **Metric Density %**: Instantly computes the ratio of bullets containing hard numbers, percentages, and scale metrics vs total bullets.
-- **Weak Action Verb Flagging**: Detects passive phrases (esponsible for, ssisted, helped, participated in) before touching the LLM.
+- **Weak Action Verb Flagging**: Detects passive phrases (
+esponsible for, ssisted, helped, participated in) before touching the LLM.
 - **Contact Completeness**: Universally verifies email, phone, LinkedIn, and GitHub links.
 
 ### 3. 🎯 Grounded Match Scoring (0–100%)
@@ -39,7 +40,7 @@ Job seekers and candidates struggle to understand why their resumes fail applica
 - **Dialogue as a DAG**: Dialogue is modeled as a Directed Acyclic Graph (Node with parentId, childrenIds, coordinates (x, y)).
 - **The "Ancestor Chaining" Secret**:
   - Clicking + Branch Follow-up on an agent node traverses Node -> Parent -> ... -> Root.
-  - Reconstructs ranch_history and sends it to Gemini 3.5 Flash Lite.
+  - Reconstructs Branch_history and sends it to Gemini 3.5 Flash Lite.
   - **Zero crosstalk or pollution** from sibling branches, saving **60%–80% of tokens**!
 - **Infinite 2D Viewport**: Pan and zoom across a 10,000px × 10,000px plane with coordinate transformation math.
 - **SVG Cubic Bézier Connector Engine**: Smooth vertical curves with directional arrowhead markers re-rendered in real-time during node drag.
@@ -130,7 +131,8 @@ python -m uvicorn app.main:app --host 127.0.0.1 --port 8000 --reload
 `
 Open your browser to: **http://127.0.0.1:8000**
 
-Or on Windows, simply double-click **un_demo.bat**!
+Or on Windows, simply double-click **
+un_demo.bat**!
 
 ---
 
