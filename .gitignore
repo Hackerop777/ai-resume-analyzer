@@ -1,0 +1,25 @@
+﻿# Environment Variables
+.env
+*.env.local
+
+# Python
+__pycache__/
+*.py[cod]
+*.class
+*.so
+.Python
+env/
+venv/
+.venv/
+ENV/
+
+# Local Vector Store & Temporary Files
+chroma_db/
+temp_uploads/
+*.log
+
+# IDE & OS
+.vscode/
+.idea/
+.DS_Store
+Thumbs.db

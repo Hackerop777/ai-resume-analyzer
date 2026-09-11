@@ -1,0 +1,907 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>AI Resume Analyzer Agent | Powered by Gemini 3.5 Flash Lite</title>
+
+  <!-- Tailwind CSS CDN -->
+  <script src="https://cdn.tailwindcss.com"></script>
+
+  <!-- Lucide Icons CDN -->
+  <script src="https://unpkg.com/lucide@latest"></script>
+
+  <!-- Marked.js for Markdown in Chat -->
+  <script src="https://cdn.jsdelivr.net/npm/marked/marked.min.js"></script>
+
+  <!-- Lenis Smooth Scroll CDN -->
+  <script src="https://unpkg.com/lenis@1.1.18/dist/lenis.min.js"></script>
+
+  <!-- GSAP & ScrollTrigger CDN -->
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.12.5/gsap.min.js"></script>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.12.5/ScrollTrigger.min.js"></script>
+
+  <!-- Custom Warm Cream & Light-Brown Stylesheet -->
+  <link rel="stylesheet" href="/static/styles.css">
+</head>
+<body class="min-h-screen">
+
+  <!-- ========================================================================
+       TOP GLOBAL NAVIGATION
+       ======================================================================== -->
+  <header class="sticky top-0 z-50 bg-[#FAF7F2]/90 backdrop-blur-md border-b border-[#E2D7C5] px-6 py-4">
+    <div class="max-w-7xl mx-auto flex items-center justify-between">
+      <div class="flex items-center gap-3 cursor-pointer" id="nav-brand-logo">
+        <div class="w-10 h-10 rounded-xl bg-gradient-to-tr from-[#8D5B4C] to-[#C88A58] flex items-center justify-center text-white shadow-md shadow-[#8D5B4C]/25">
+          <i data-lucide="file-check-2" class="w-5 h-5"></i>
+        </div>
+        <div>
+          <span class="font-serif-title font-extrabold text-lg text-[#291E1A] tracking-tight">AI Resume <span class="italic text-[#8D5B4C]">Analyzer</span></span>
+          <span class="block text-[10px] font-mono text-[#786B63] uppercase tracking-wider">Gemini 3.5 Flash Lite • RAG</span>
+        </div>
+      </div>
+
+      <nav class="hidden md:flex items-center gap-6 text-xs font-bold text-[#6B4226]">
+        <a href="#landing-hero" class="hover:text-[#8D5B4C] transition nav-link">Overview</a>
+        <a href="#showcase-stack-section" class="hover:text-[#8D5B4C] transition nav-link">Capabilities (3D Deck)</a>
+        <a href="#micro-widgets-section" class="hover:text-[#8D5B4C] transition nav-link">Live Micro-Widgets</a>
+        <button id="nav-canvas-link" type="button" class="hover:text-[#8D5B4C] transition flex items-center gap-1.5 text-[#8D5B4C]">
+          <i data-lucide="git-fork" class="w-3.5 h-3.5"></i>
+          <span>Canvas Chat</span>
+        </button>
+      </nav>
+
+      <div class="flex items-center gap-2">
+        <button id="theme-toggle-btn" class="p-2.5 rounded-xl border border-[#E2D7C5] bg-[#F5EFEB] hover:bg-[#EFE8DD] text-[#6B4226] transition flex items-center justify-center shadow-sm" title="Toggle Day / Night Mode" aria-label="Toggle Day / Night Mode">
+          <i data-lucide="moon" id="theme-icon" class="w-4 h-4"></i>
+        </button>
+        <button id="nav-canvas-btn" class="hidden sm:flex px-3.5 py-2 rounded-xl bg-[#F5EFEB] hover:bg-[#EFE8DD] text-[#6B4226] border border-[#E2D7C5] text-xs font-bold items-center gap-1.5 shadow-sm transition">
+          <i data-lucide="git-fork" class="w-3.5 h-3.5 text-[#8D5B4C]"></i>
+          <span>Canvas Chat</span>
+        </button>
+        <button id="nav-launch-btn" data-magnetic="true" class="px-4 py-2 rounded-xl btn-caramel text-xs font-bold flex items-center gap-2 shadow-sm">
+          <span>Interact with Agent</span>
+          <i data-lucide="arrow-right" class="w-3.5 h-3.5"></i>
+        </button>
+      </div>
+    </div>
+  </header>
+
+  <!-- ========================================================================
+       VIEW 1: LANDING PAGE (DEFAULT VIEW)
+       ======================================================================== -->
+  <div id="landing-view" class="space-y-24 px-4 md:px-8 max-w-7xl mx-auto pt-8">
+
+    <!-- 1. Hero Section with Typography Mask Reveal & Magnetic CTA -->
+    <section id="landing-hero" class="cream-card p-8 md:p-14 text-center space-y-6 relative overflow-hidden border border-[#E2D7C5]">
+      <!-- Background Ambient Glow -->
+      <div class="absolute top-0 left-1/2 -translate-x-1/2 w-96 h-96 bg-gradient-to-b from-[#C88A58]/15 to-transparent rounded-full blur-3xl pointer-events-none"></div>
+
+      <div class="flex items-center justify-center gap-2 text-xs">
+        <span class="inline-flex items-center gap-1.5 px-3 py-1 rounded-full bg-[#EAF4EC] text-[#2E7D32] border border-[#2E7D32]/25 font-bold shadow-sm">
+          <span class="w-2 h-2 rounded-full bg-[#2E7D32] warm-pulse-dot"></span>
+          Sub-3s Fast Output
+        </span>
+        <span class="inline-flex items-center gap-1.5 px-3 py-1 rounded-full bg-[#F5EFEB] text-[#8D5B4C] border border-[#E2D7C5] font-bold shadow-sm">
+          <i data-lucide="cpu" class="w-3.5 h-3.5"></i>
+          Low-Token Consumption
+        </span>
+        <span class="inline-flex items-center gap-1.5 px-3 py-1 rounded-full bg-white text-[#B45309] border border-[#C88A58]/30 font-bold shadow-sm">
+          <i data-lucide="database" class="w-3.5 h-3.5"></i>
+          ChromaDB RAG (D: Drive)
+        </span>
+      </div>
+
+      <div class="space-y-3 max-w-3xl mx-auto">
+        <div class="text-mask-reveal">
+          <h1 class="text-3xl md:text-5xl lg:text-6xl font-extrabold font-serif-title text-[#291E1A] tracking-tight leading-[1.15]">
+            Precision Engineering for Your <span class="text-gradient-brown italic">Dream Career.</span>
+          </h1>
+        </div>
+        <p class="text-sm md:text-base text-[#786B63] max-w-2xl mx-auto leading-relaxed">
+          Score your resume against any target role in under 3 seconds. Audits ATS compliance, computes grounded semantic match, and delivers high-impact Google X-Y-Z bullet rewrites with conversational coaching.
+        </p>
+      </div>
+
+      <!-- Hero Magnetic CTA -->
+      <div class="flex flex-col sm:flex-row items-center justify-center gap-3 pt-2">
+        <button id="hero-interact-btn" data-magnetic="true" class="w-full sm:w-auto px-7 py-4 rounded-xl btn-caramel text-sm font-extrabold tracking-wide flex items-center justify-center gap-2.5 shadow-md">
+          <i data-lucide="sparkles" class="w-4 h-4 text-amber-200"></i>
+          <span>Interact with Agent</span>
+          <i data-lucide="arrow-up-right" class="w-4 h-4"></i>
+        </button>
+        <a href="#showcase-stack-section" class="w-full sm:w-auto px-6 py-4 rounded-xl bg-[#FAF7F2] hover:bg-[#F5EFEB] text-[#6B4226] border border-[#E2D7C5] text-xs font-bold transition flex items-center justify-center gap-2 shadow-sm">
+          <span>Explore Capabilities (3D Deck)</span>
+          <i data-lucide="chevron-down" class="w-3.5 h-3.5"></i>
+        </a>
+      </div>
+    </section>
+
+    <!-- 2. Scroll-Linked Layer Stacking (3D Card Carousel / Spread) -->
+    <section id="showcase-stack-section" class="space-y-6">
+      <div class="text-center max-w-xl mx-auto space-y-2">
+        <span class="text-xs font-mono font-bold uppercase tracking-wider text-[#C88A58]">Feature Showcase</span>
+        <h2 class="text-2xl md:text-4xl font-extrabold font-serif-title text-[#291E1A]">
+          Scroll-Linked <span class="italic text-[#8D5B4C]">3D Capability Deck</span>
+        </h2>
+        <p class="text-xs md:text-sm text-[#786B63]">
+          As you scroll, inspect how our hybrid agent architecture layers zero-token local tools, ChromaDB RAG, and Gemini 3.5 Flash Lite.
+        </p>
+      </div>
+
+      <!-- 3D Card Showcase Deck -->
+      <div class="deck-showcase-container max-w-4xl mx-auto" id="deck-container">
+        <!-- Deck Card 1: Local Heuristic Audit -->
+        <div class="deck-card deck-card-1 p-6 md:p-8 space-y-4" id="deck-1">
+          <div class="flex items-center justify-between">
+            <div class="flex items-center gap-3">
+              <div class="w-10 h-10 rounded-xl bg-[#EAF4EC] text-[#2E7D32] flex items-center justify-center font-bold">01</div>
+              <div>
+                <h3 class="font-bold text-base md:text-lg text-[#291E1A]">5ms Zero-Token ATS Heuristic Audit</h3>
+                <p class="text-xs text-[#786B63]">Instant deterministic evaluation before touching the LLM</p>
+              </div>
+            </div>
+            <span class="px-2.5 py-1 rounded-full bg-[#EAF4EC] text-[#2E7D32] text-[10px] font-bold">0 Tokens Used</span>
+          </div>
+          <div class="grid grid-cols-1 sm:grid-cols-3 gap-3 text-xs pt-2">
+            <div class="p-3 rounded-xl bg-[#FAF7F2] border border-[#E2D7C5]">
+              <span class="text-[#786B63] block text-[10px] uppercase font-bold">Metric Density</span>
+              <span class="font-bold text-[#291E1A] text-sm">Target >50%</span>
+              <p class="text-[10px] text-[#A3968C] mt-0.5">Audits numbers, %, and business metrics</p>
+            </div>
+            <div class="p-3 rounded-xl bg-[#FAF7F2] border border-[#E2D7C5]">
+              <span class="text-[#786B63] block text-[10px] uppercase font-bold">Weak Verb Audit</span>
+              <span class="font-bold text-[#B45309] text-sm">Flags Passive Words</span>
+              <p class="text-[10px] text-[#A3968C] mt-0.5">Replaces "assisted" with strong action verbs</p>
+            </div>
+            <div class="p-3 rounded-xl bg-[#FAF7F2] border border-[#E2D7C5]">
+              <span class="text-[#786B63] block text-[10px] uppercase font-bold">Contact Completeness</span>
+              <span class="font-bold text-[#2E7D32] text-sm">Universal Check</span>
+              <p class="text-[10px] text-[#A3968C] mt-0.5">Email, phone, LinkedIn & GitHub detection</p>
+            </div>
+          </div>
+        </div>
+
+        <!-- Deck Card 2: ChromaDB RAG Vector Store -->
+        <div class="deck-card deck-card-2 p-6 md:p-8 space-y-4" id="deck-2">
+          <div class="flex items-center justify-between">
+            <div class="flex items-center gap-3">
+              <div class="w-10 h-10 rounded-xl bg-[#F5EFEB] text-[#8D5B4C] flex items-center justify-center font-bold">02</div>
+              <div>
+                <h3 class="font-bold text-base md:text-lg text-[#291E1A]">ChromaDB Persistent Vector Store & RAG</h3>
+                <p class="text-xs text-[#786B63]">Grounded indexing strictly stored on D: drive with gemini-embedding-001</p>
+              </div>
+            </div>
+            <span class="px-2.5 py-1 rounded-full bg-[#F5EFEB] text-[#8D5B4C] text-[10px] font-bold">Batch Embeddings</span>
+          </div>
+          <div class="grid grid-cols-1 sm:grid-cols-2 gap-3 text-xs pt-2">
+            <div class="p-3 rounded-xl bg-[#FAF7F2] border border-[#E2D7C5]">
+              <span class="text-[#8D5B4C] font-bold block mb-1">Target JD Requirement Distillation:</span>
+              <p class="text-[#786B63] leading-relaxed">Indexes job chunks and pulls the top matching candidate achievements into Gemini without token bloat.</p>
+            </div>
+            <div class="p-3 rounded-xl bg-[#FAF7F2] border border-[#E2D7C5]">
+              <span class="text-[#C88A58] font-bold block mb-1">Industry Hiring Benchmarks:</span>
+              <p class="text-[#786B63] leading-relaxed">Pre-populated with Google X-Y-Z rules, ATS layout guidelines, and interview framing frameworks.</p>
+            </div>
+          </div>
+        </div>
+
+        <!-- Deck Card 3: Gemini 3.5 Flash Lite Engine & Rewrites -->
+        <div class="deck-card deck-card-3 p-6 md:p-8 space-y-4" id="deck-3">
+          <div class="flex items-center justify-between">
+            <div class="flex items-center gap-3">
+              <div class="w-10 h-10 rounded-xl bg-[#FDF0ED] text-[#C53030] flex items-center justify-center font-bold">03</div>
+              <div>
+                <h3 class="font-bold text-base md:text-lg text-[#291E1A]">Gemini 3.5 Flash Lite & Google X-Y-Z Rewriter</h3>
+                <p class="text-xs text-[#786B63]">Strict structured Pydantic JSON + multi-turn conversational follow-up</p>
+              </div>
+            </div>
+            <span class="px-2.5 py-1 rounded-full bg-[#EAF4EC] text-[#2E7D32] text-[10px] font-bold">Sub-3s Latency</span>
+          </div>
+          <div class="p-3.5 rounded-xl bg-[#FAF7F2] border border-[#E2D7C5] text-xs space-y-1.5">
+            <span class="text-[10px] font-mono uppercase font-bold text-[#8D5B4C]">Sample Generated Transformation:</span>
+            <div class="grid grid-cols-1 sm:grid-cols-2 gap-2 pt-1">
+              <div class="p-2.5 rounded-lg bg-[#FDF0ED] border border-[#C53030]/20 text-[#291E1A]">
+                <strong class="text-[#C53030] block text-[10px]">Before:</strong> "Responsible for developing backend microservices for automated payment routing."
+              </div>
+              <div class="p-2.5 rounded-lg bg-[#EAF4EC] border border-[#2E7D32]/20 text-[#1C4D22]">
+                <strong class="text-[#2E7D32] block text-[10px]">Google X-Y-Z Rewrite:</strong> "Architected FastAPI payment microservices, processing $45M+ transactions while reducing p99 latency to 85ms."
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- 3. Interactive Live Micro-Widgets Section -->
+    <section id="micro-widgets-section" class="space-y-6">
+      <div class="text-center max-w-xl mx-auto space-y-2">
+        <span class="text-xs font-mono font-bold uppercase tracking-wider text-[#C88A58]">Hands-On Playground</span>
+        <h2 class="text-2xl md:text-4xl font-extrabold font-serif-title text-[#291E1A]">
+          Interactive <span class="italic text-[#8D5B4C]">Live Micro-Widgets</span>
+        </h2>
+        <p class="text-xs md:text-sm text-[#786B63]">
+          Try these embedded miniature controls demonstrating how our evaluation rules operate live.
+        </p>
+      </div>
+
+      <div class="grid grid-cols-1 md:grid-cols-3 gap-6">
+        <!-- Micro-Widget 1: ATS Strictness Toggle -->
+        <div class="cream-card p-6 space-y-4">
+          <div class="flex items-center justify-between">
+            <span class="text-xs font-bold text-[#291E1A]">ATS Parser Strictness</span>
+            <div class="micro-toggle" id="demo-toggle-1">
+              <div class="micro-toggle-thumb"></div>
+            </div>
+          </div>
+          <p class="text-xs text-[#786B63]">Toggle between Standard vs Strict ATS Parsing mode to test heuristic sensitivity:</p>
+          <div id="demo-toggle-status" class="p-3 rounded-xl bg-[#FAF7F2] border border-[#E2D7C5] text-xs font-mono text-[#8D5B4C] font-semibold">
+            Status: Standard ATS Threshold (40% metrics)
+          </div>
+        </div>
+
+        <!-- Micro-Widget 2: Interactive Keyword Gap Tester -->
+        <div class="cream-card p-6 space-y-4">
+          <span class="text-xs font-bold text-[#291E1A] block">Keyword Match Previewer</span>
+          <p class="text-xs text-[#786B63]">Click candidate skills to test instant Jaccard matching:</p>
+          <div class="flex flex-wrap gap-1.5" id="demo-skill-pills">
+            <button type="button" class="demo-pill px-2.5 py-1 rounded-lg bg-[#EAF4EC] text-[#2E7D32] border border-[#2E7D32]/30 text-xs font-mono font-semibold transition" data-skill="FastAPI">✓ FastAPI</button>
+            <button type="button" class="demo-pill px-2.5 py-1 rounded-lg bg-[#EAF4EC] text-[#2E7D32] border border-[#2E7D32]/30 text-xs font-mono font-semibold transition" data-skill="Python">✓ Python</button>
+            <button type="button" class="demo-pill px-2.5 py-1 rounded-lg bg-[#FDF0ED] text-[#C53030] border border-[#C53030]/30 text-xs font-mono font-semibold transition" data-skill="Kubernetes">✗ Kubernetes</button>
+            <button type="button" class="demo-pill px-2.5 py-1 rounded-lg bg-[#FDF0ED] text-[#C53030] border border-[#C53030]/30 text-xs font-mono font-semibold transition" data-skill="Kafka">✗ Kafka</button>
+          </div>
+          <div id="demo-skill-counter" class="text-[11px] text-[#786B63] font-mono">2 Matched • 2 Missing</div>
+        </div>
+
+        <!-- Micro-Widget 3: Rewrite Formula Selector -->
+        <div class="cream-card p-6 space-y-4">
+          <span class="text-xs font-bold text-[#291E1A] block">Impact Formula Switcher</span>
+          <div class="flex gap-1.5 text-xs bg-[#FAF7F2] p-1 rounded-xl border border-[#E2D7C5]">
+            <button id="tab-formula-xyz" class="flex-1 py-1 rounded-lg bg-[#8D5B4C] text-white font-bold text-[11px]">Google X-Y-Z</button>
+            <button id="tab-formula-star" class="flex-1 py-1 rounded-lg text-[#786B63] hover:text-[#291E1A] font-bold text-[11px]">STAR Method</button>
+          </div>
+          <div id="demo-formula-display" class="p-3 rounded-xl bg-[#FAF7F2] border border-[#E2D7C5] text-xs text-[#291E1A] leading-relaxed">
+            <strong>Formula:</strong> Accomplished [X] by [Z] as measured by [Y]. Focuses immediately on business outcome and metric scale.
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- 4. Scroll-Scrubbing Typography & Philosophy Narrative -->
+    <section id="narrative-section" class="cream-card p-8 md:p-14 space-y-6 max-w-4xl mx-auto scroll-scrub-block">
+      <span class="text-xs font-mono font-bold uppercase tracking-wider text-[#C88A58]">Our Architecture Philosophy</span>
+      <h2 class="text-2xl md:text-3xl font-bold font-serif-title text-[#291E1A]">
+        Why Low-Token Speed Matters More Than Endless Prompts
+      </h2>
+      <div class="space-y-4 text-sm md:text-base leading-relaxed">
+        <p class="scroll-scrub-p dim transition">
+          Most AI resume tools dump entire multi-page resumes and 2,000-word job descriptions repeatedly into slow LLM calls. This burns thousands of tokens, bloats response latency to 15+ seconds, and introduces hallucinated formatting errors.
+        </p>
+        <p class="scroll-scrub-p dim transition">
+          Our approach is fundamentally different: <strong>Local Deterministic Pre-Processing</strong> handles ATS formatting, metric counting, and keyword intersection in 5 milliseconds. Only targeted, distilled evidence retrieved from ChromaDB is passed to <strong>Gemini 3.5 Flash Lite</strong>.
+        </p>
+        <p class="scroll-scrub-p dim transition font-semibold text-[#8D5B4C]">
+          The result is an ultra-fast, sub-3 second turnaround with strict structured outputs, zero conversational fluff, and persistent short-term memory for intelligent follow-up interview prep.
+        </p>
+      </div>
+
+      <div class="pt-4 flex justify-center">
+        <button id="narrative-launch-btn" data-magnetic="true" class="px-8 py-4 rounded-xl btn-caramel font-extrabold text-sm flex items-center gap-2.5 shadow-md">
+          <span>Launch Agent Workspace Now</span>
+          <i data-lucide="arrow-right" class="w-4 h-4"></i>
+        </button>
+      </div>
+    </section>
+
+  </div> <!-- /landing-view -->
+
+  <!-- ========================================================================
+       VIEW 2: AGENT WORKSPACE (ACTIVATED VIA "INTERACT WITH AGENT")
+       ======================================================================== -->
+  <div id="agent-view" class="hidden space-y-7 px-4 md:px-8 max-w-7xl mx-auto pt-6">
+
+    <!-- Workspace Top Header Bar with "Back to Overview" -->
+    <div class="cream-card p-4 md:p-6 flex flex-col sm:flex-row items-center justify-between gap-4 border border-[#E2D7C5]">
+      <div class="flex items-center gap-3">
+        <button id="btn-back-to-landing" data-magnetic="true" class="px-3.5 py-1.5 rounded-xl bg-[#FAF7F2] hover:bg-[#F5EFEB] text-[#6B4226] border border-[#E2D7C5] text-xs font-bold transition flex items-center gap-1.5 shadow-sm">
+          <i data-lucide="arrow-left" class="w-3.5 h-3.5 text-[#8D5B4C]"></i>
+          <span>Back to Overview</span>
+        </button>
+        <span class="text-xs font-mono font-bold text-[#8D5B4C] bg-[#F5EFEB] px-3 py-1 rounded-full border border-[#E2D7C5]">
+          Active Agent Session
+        </span>
+      </div>
+
+      <!-- Quick Preset Buttons -->
+      <div class="flex items-center gap-2 w-full sm:w-auto">
+        <button id="btn-sample-swe" data-magnetic="true" class="flex-1 sm:flex-none px-3.5 py-1.5 rounded-xl bg-[#F5EFEB] hover:bg-[#EFE8DD] text-[#6B4226] border border-[#E2D7C5] text-xs font-bold transition flex items-center justify-center gap-1.5 shadow-sm">
+          <i data-lucide="code-2" class="w-3.5 h-3.5 text-[#8D5B4C]"></i>
+          Preset 1: Software Engineer
+        </button>
+        <button id="btn-sample-ml" data-magnetic="true" class="flex-1 sm:flex-none px-3.5 py-1.5 rounded-xl bg-[#FDF0ED] hover:bg-[#FAE5DF] text-[#8D5B4C] border border-[#8D5B4C]/25 text-xs font-bold transition flex items-center justify-center gap-1.5 shadow-sm">
+          <i data-lucide="brain" class="w-3.5 h-3.5 text-[#C88A58]"></i>
+          Preset 2: AI / ML Engineer
+        </button>
+      </div>
+    </div>
+
+    <!-- Main Workspace Grid -->
+    <main class="grid grid-cols-1 lg:grid-cols-12 gap-7">
+
+      <!-- LEFT COLUMN: Inputs & Controls (5 Columns) -->
+      <section id="input-section" class="lg:col-span-5 space-y-6">
+        <div class="cream-card p-6 md:p-7 space-y-5">
+          <div class="flex items-center justify-between">
+            <h2 class="text-base md:text-lg font-bold flex items-center gap-2 text-[#291E1A]">
+              <i data-lucide="upload-cloud" class="w-5 h-5 text-[#8D5B4C]"></i>
+              Candidate Resume
+            </h2>
+            <div class="flex gap-1 text-xs bg-[#F5EFEB] p-1 rounded-xl border border-[#E2D7C5]">
+              <button id="tab-file-btn" class="px-3 py-1 rounded-lg bg-[#8D5B4C] text-white font-semibold shadow-sm transition">File Upload</button>
+              <button id="tab-text-btn" class="px-3 py-1 rounded-lg text-[#786B63] hover:text-[#291E1A] font-semibold transition">Paste Text</button>
+            </div>
+          </div>
+
+          <!-- File Upload Drop Zone -->
+          <div id="file-dropzone" class="border-2 border-dashed border-[#E2D7C5] hover:border-[#C88A58] rounded-2xl p-7 text-center cursor-pointer transition bg-[#FAF7F2] hover:bg-[#FFFDF9]">
+            <input type="file" id="resume-file-input" class="hidden" accept=".pdf,.docx,.doc,.txt">
+            <div class="space-y-2">
+              <div class="w-12 h-12 rounded-2xl bg-[#F5EFEB] text-[#8D5B4C] mx-auto flex items-center justify-center border border-[#E2D7C5] shadow-sm">
+                <i data-lucide="file-up" class="w-6 h-6"></i>
+              </div>
+              <p class="text-sm font-bold text-[#291E1A]">Drag & drop your Resume PDF, DOCX, or TXT</p>
+              <p class="text-xs text-[#786B63]">or click anywhere to browse local files</p>
+              <div id="selected-file-chip" class="hidden inline-flex items-center gap-2 mt-2 px-3.5 py-1 rounded-full bg-[#EAF4EC] text-[#2E7D32] border border-[#2E7D32]/30 text-xs font-mono font-semibold">
+                <i data-lucide="file-text" class="w-3.5 h-3.5"></i>
+                <span id="selected-file-name">resume.pdf</span>
+                <button type="button" id="remove-file-btn" class="hover:text-red-600 ml-1 font-bold">&times;</button>
+              </div>
+            </div>
+          </div>
+
+          <!-- Paste Resume Text Box -->
+          <div id="resume-text-container" class="hidden space-y-2">
+            <label class="text-xs text-[#786B63] font-semibold">Paste Resume Plaintext:</label>
+            <textarea id="resume-text-input" rows="8" class="w-full bg-[#FAF7F2] border border-[#E2D7C5] focus:border-[#C88A58] focus:bg-white rounded-xl p-3 text-xs font-mono text-[#291E1A] outline-none resize-y transition shadow-inner" placeholder="Paste full resume text here..."></textarea>
+          </div>
+
+          <!-- Target Job Description Box -->
+          <div class="space-y-2">
+            <div class="flex items-center justify-between">
+              <label class="text-sm font-bold flex items-center gap-2 text-[#291E1A]">
+                <i data-lucide="briefcase" class="w-4 h-4 text-[#C88A58]"></i>
+                Target Job Description
+              </label>
+              <span id="jd-char-count" class="text-xs text-[#786B63] font-mono">0 chars</span>
+            </div>
+            <textarea id="jd-text-input" rows="7" class="w-full bg-[#FAF7F2] border border-[#E2D7C5] focus:border-[#C88A58] focus:bg-white rounded-xl p-3 text-xs text-[#291E1A] outline-none resize-y transition shadow-inner leading-relaxed" placeholder="Paste target Job Description (role requirements, technical stack, qualifications)..."></textarea>
+          </div>
+
+          <!-- Collapsible External Notes / Guidelines (RAG Ingestion) -->
+          <div class="border border-[#E2D7C5] rounded-xl overflow-hidden bg-[#FAF7F2]">
+            <button id="ext-doc-toggle" type="button" class="w-full p-3.5 text-xs font-bold text-[#6B4226] hover:bg-[#F5EFEB] flex items-center justify-between transition">
+              <span class="flex items-center gap-2">
+                <i data-lucide="book-open" class="w-4 h-4 text-[#8D5B4C]"></i>
+                RAG Ingestion: Company Values / Guidelines (Optional)
+              </span>
+              <i data-lucide="chevron-down" id="ext-doc-icon" class="w-4 h-4 transition-transform text-[#8D5B4C]"></i>
+            </button>
+            <div id="ext-doc-content" class="hidden p-3.5 border-t border-[#E2D7C5] space-y-2 bg-[#FFFDF9]">
+              <p class="text-[11px] text-[#786B63]">Ingests role-specific guidelines or company culture into ChromaDB for grounded evaluation:</p>
+              <textarea id="ext-doc-input" rows="3" class="w-full bg-[#FAF7F2] border border-[#E2D7C5] focus:border-[#C88A58] rounded-lg p-2.5 text-xs text-[#291E1A] outline-none" placeholder="e.g. Apex FinTech emphasizes DORA metrics and production Kubernetes experience..."></textarea>
+            </div>
+          </div>
+
+          <!-- Primary Action Button with Magnetic Physics -->
+          <button id="btn-analyze" data-magnetic="true" class="w-full py-4 rounded-xl btn-caramel font-bold text-sm tracking-wide flex items-center justify-center gap-2.5">
+            <i data-lucide="zap" class="w-4 h-4 text-amber-200"></i>
+            <span>Analyze Resume with Gemini Agent</span>
+          </button>
+        </div>
+      </section>
+
+      <!-- RIGHT COLUMN: Output & Results (7 Columns) -->
+      <section id="results-section" class="lg:col-span-7 space-y-7 perspective-container">
+
+        <!-- Welcome Placeholder State -->
+        <div id="placeholder-state" class="cream-card p-12 text-center space-y-4">
+          <div class="w-16 h-16 rounded-2xl bg-[#F5EFEB] text-[#8D5B4C] mx-auto flex items-center justify-center border border-[#E2D7C5] shadow-sm">
+            <i data-lucide="sparkle" class="w-8 h-8 text-[#C88A58] animate-spin-slow"></i>
+          </div>
+          <h3 class="text-xl font-bold font-serif-title text-[#291E1A]">Ready for Deep AI Evaluation</h3>
+          <p class="text-sm text-[#786B63] max-w-md mx-auto leading-relaxed">
+            Upload your resume or select one of the <strong class="text-[#8D5B4C]">Quick Presets</strong> to generate an instant match score, ATS compliance audit, Google X-Y-Z bullet rewrites, and skill gap matrix.
+          </p>
+          <div class="flex flex-wrap items-center justify-center gap-4 pt-3 text-xs text-[#6B4226] font-semibold">
+            <span class="flex items-center gap-1.5"><i data-lucide="check-circle" class="w-3.5 h-3.5 text-[#2E7D32]"></i> Gemini 3.5 Flash Lite</span>
+            <span class="flex items-center gap-1.5"><i data-lucide="check-circle" class="w-3.5 h-3.5 text-[#C88A58]"></i> Local ChromaDB RAG</span>
+            <span class="flex items-center gap-1.5"><i data-lucide="check-circle" class="w-3.5 h-3.5 text-[#8D5B4C]"></i> Short-Term Memory</span>
+          </div>
+        </div>
+
+        <!-- Loading State -->
+        <div id="loading-state" class="hidden cream-card p-12 text-center space-y-4">
+          <div class="w-16 h-16 rounded-full border-4 border-[#E2D7C5] border-t-[#8D5B4C] animate-spin mx-auto"></div>
+          <h3 class="text-lg font-bold text-[#291E1A] font-serif-title">Gemini 3.5 Flash Lite Agent at Work...</h3>
+          <p class="text-xs text-[#786B63] max-w-sm mx-auto" id="loading-step-text">Running local ATS heuristics, indexing vector store, and analyzing semantic match...</p>
+        </div>
+
+        <!-- RESULTS CONTAINER -->
+        <div id="results-container" class="hidden space-y-7">
+
+          <!-- 1. Hero Match Score & Telemetry -->
+          <div id="score-card" class="cream-card card-3d-stack p-6 md:p-8 space-y-6 border border-[#C88A58]/35 bg-[#FFFDF9]">
+            <div class="flex flex-col sm:flex-row items-center justify-between gap-6">
+              
+              <!-- Circular Score Gauge -->
+              <div class="flex items-center gap-6">
+                <div class="relative w-32 h-32 flex-shrink-0">
+                  <svg viewBox="0 0 36 36" class="circular-chart">
+                    <path class="circle-bg" d="M18 2.0845 a 15.9155 15.9155 0 0 1 0 31.831 a 15.9155 15.9155 0 0 1 0 -31.831" />
+                    <path id="gauge-circle" class="circle green" stroke-dasharray="0, 100" d="M18 2.0845 a 15.9155 15.9155 0 0 1 0 31.831 a 15.9155 15.9155 0 0 1 0 -31.831" />
+                    <text id="gauge-text" x="18" y="21.5" class="percentage">0%</text>
+                  </svg>
+                </div>
+                <div>
+                  <span class="text-[11px] uppercase font-bold tracking-wider text-[#C88A58]" id="detected-target-role">Target Role</span>
+                  <h3 class="text-xl md:text-2xl font-black font-serif-title text-[#291E1A]" id="detected-candidate-name">Candidate Match Score</h3>
+                  <p class="text-xs text-[#786B63] mt-1.5 max-w-sm leading-relaxed" id="score-rationale">...</p>
+                </div>
+              </div>
+
+              <!-- Sub-Score Breakdown Bars -->
+              <div class="w-full sm:w-60 space-y-3 text-xs">
+                <div>
+                  <div class="flex justify-between text-[#786B63] mb-1 font-semibold">
+                    <span>Technical Match</span>
+                    <span id="score-tech" class="font-bold text-[#291E1A]">0%</span>
+                  </div>
+                  <div class="w-full bg-[#EFE8DD] rounded-full h-2">
+                    <div id="bar-tech" class="bg-[#8D5B4C] h-2 rounded-full transition-all duration-1000" style="width: 0%"></div>
+                  </div>
+                </div>
+                <div>
+                  <div class="flex justify-between text-[#786B63] mb-1 font-semibold">
+                    <span>Experience Relevance</span>
+                    <span id="score-exp" class="font-bold text-[#291E1A]">0%</span>
+                  </div>
+                  <div class="w-full bg-[#EFE8DD] rounded-full h-2">
+                    <div id="bar-exp" class="bg-[#C88A58] h-2 rounded-full transition-all duration-1000" style="width: 0%"></div>
+                  </div>
+                </div>
+                <div>
+                  <div class="flex justify-between text-[#786B63] mb-1 font-semibold">
+                    <span>ATS Readability</span>
+                    <span id="score-ats" class="font-bold text-[#291E1A]">0%</span>
+                  </div>
+                  <div class="w-full bg-[#EFE8DD] rounded-full h-2">
+                    <div id="bar-ats" class="bg-[#2E7D32] h-2 rounded-full transition-all duration-1000" style="width: 0%"></div>
+                  </div>
+                </div>
+                <div>
+                  <div class="flex justify-between text-[#786B63] mb-1 font-semibold">
+                    <span>Soft Skills / Leadership</span>
+                    <span id="score-soft" class="font-bold text-[#291E1A]">0%</span>
+                  </div>
+                  <div class="w-full bg-[#EFE8DD] rounded-full h-2">
+                    <div id="bar-soft" class="bg-[#B45309] h-2 rounded-full transition-all duration-1000" style="width: 0%"></div>
+                  </div>
+                </div>
+              </div>
+            </div>
+
+            <!-- Dynamic Telemetry Bar -->
+            <div class="pt-4 border-t border-[#E2D7C5] grid grid-cols-1 sm:grid-cols-3 gap-3 text-center text-xs">
+              <div class="bg-[#FAF7F2] p-2.5 rounded-xl border border-[#E2D7C5]">
+                <span class="text-[#786B63] block text-[10px] uppercase font-bold">Engine Latency</span>
+                <span id="telemetry-latency" class="font-mono font-bold text-[#2E7D32] text-sm">-- ms</span>
+              </div>
+              <div class="bg-[#FAF7F2] p-2.5 rounded-xl border border-[#E2D7C5]">
+                <span class="text-[#786B63] block text-[10px] uppercase font-bold">Est. Tokens Consumed</span>
+                <span id="telemetry-tokens" class="font-mono font-bold text-[#8D5B4C] text-sm">--</span>
+              </div>
+              <div class="bg-[#FAF7F2] p-2.5 rounded-xl border border-[#E2D7C5]">
+                <span class="text-[#786B63] block text-[10px] uppercase font-bold">Target Model</span>
+                <span id="telemetry-model" class="font-mono font-bold text-[#291E1A] text-xs">gemini-3.5-flash-lite</span>
+              </div>
+            </div>
+          </div>
+
+          <!-- 2. ATS Friendliness Check Card -->
+          <div id="ats-card" class="cream-card card-3d-stack p-6 md:p-7 space-y-4">
+            <h3 class="text-xs md:text-sm font-bold uppercase tracking-wider text-[#6B4226] flex items-center gap-2">
+              <i data-lucide="shield-check" class="w-4 h-4 text-[#2E7D32]"></i>
+              ATS Friendliness & Heuristic Audit
+            </h3>
+            <div class="grid grid-cols-1 md:grid-cols-3 gap-4 text-xs">
+              <div class="bg-[#FAF7F2] p-3.5 rounded-xl border border-[#E2D7C5] space-y-1.5">
+                <div class="flex justify-between font-semibold">
+                  <span class="text-[#786B63]">Metric Density</span>
+                  <span id="ats-metric-pct" class="font-bold text-[#291E1A]">0%</span>
+                </div>
+                <div class="w-full bg-[#EFE8DD] rounded-full h-1.5">
+                  <div id="ats-metric-bar" class="bg-[#8D5B4C] h-1.5 rounded-full" style="width: 0%"></div>
+                </div>
+                <p class="text-[10px] text-[#786B63]">Benchmark: >50% bullets with numbers / metrics</p>
+              </div>
+
+              <div class="bg-[#FAF7F2] p-3.5 rounded-xl border border-[#E2D7C5] space-y-1">
+                <div class="flex justify-between font-semibold">
+                  <span class="text-[#786B63]">Action Verb Strength</span>
+                  <span id="ats-verbs-count" class="font-bold text-[#291E1A]">--</span>
+                </div>
+                <div id="ats-weak-verbs" class="text-[11px] text-[#B45309] truncate font-medium">Weak verbs: None</div>
+              </div>
+
+              <div class="bg-[#FAF7F2] p-3.5 rounded-xl border border-[#E2D7C5] space-y-1">
+                <span class="text-[#786B63] block mb-1 font-semibold">Contact Completeness</span>
+                <div class="flex flex-wrap gap-1.5 text-[10px]" id="ats-contact-badges">
+                </div>
+              </div>
+            </div>
+            <div id="ats-warnings-container" class="space-y-2 text-xs">
+            </div>
+          </div>
+
+          <!-- 3. Skill & Keyword Gap Analysis -->
+          <div id="skills-card" class="cream-card card-3d-stack p-6 md:p-7 space-y-4">
+            <h3 class="text-xs md:text-sm font-bold uppercase tracking-wider text-[#6B4226] flex items-center gap-2">
+              <i data-lucide="tags" class="w-4 h-4 text-[#C88A58]"></i>
+              Skill & Keyword Gap Matrix
+            </h3>
+            <div class="space-y-3.5 text-xs">
+              <div>
+                <span class="text-[#2E7D32] font-bold block mb-2 flex items-center gap-1">
+                  <i data-lucide="check" class="w-3.5 h-3.5"></i> Matched Technical Skills Found in Resume:
+                </span>
+                <div id="matched-skills-pills" class="flex flex-wrap gap-2">
+                </div>
+              </div>
+              <div class="pt-3 border-t border-[#E2D7C5]">
+                <span class="text-[#C53030] font-bold block mb-2 flex items-center gap-1">
+                  <i data-lucide="alert-circle" class="w-3.5 h-3.5"></i> Missing Critical Keywords from Target JD:
+                </span>
+                <div id="missing-skills-pills" class="flex flex-wrap gap-2">
+                </div>
+              </div>
+            </div>
+          </div>
+
+          <!-- 4. Google X-Y-Z Rewrite Lab -->
+          <div id="rewrites-card" class="cream-card card-3d-stack p-6 md:p-7 space-y-4">
+            <div class="flex items-center justify-between">
+              <h3 class="text-xs md:text-sm font-bold uppercase tracking-wider text-[#6B4226] flex items-center gap-2">
+                <i data-lucide="wand-2" class="w-4 h-4 text-[#C88A58]"></i>
+                Google X-Y-Z Before / After Rewrite Lab
+              </h3>
+              <span class="text-[11px] text-[#786B63] font-mono hidden sm:inline">Accomplished [X] by [Z] as measured by [Y]</span>
+            </div>
+            <div id="rewrites-container" class="space-y-4">
+            </div>
+          </div>
+
+          <!-- 5. Section-by-Section Deep Dive -->
+          <div id="breakdown-card" class="cream-card card-3d-stack p-6 md:p-7 space-y-4">
+            <h3 class="text-xs md:text-sm font-bold uppercase tracking-wider text-[#6B4226] flex items-center gap-2">
+              <i data-lucide="layers" class="w-4 h-4 text-[#8D5B4C]"></i>
+              Section-by-Section Breakdown
+            </h3>
+            <div id="sections-breakdown-container" class="space-y-3.5">
+            </div>
+          </div>
+
+          <!-- 6. Prioritized Action Plan -->
+          <div id="plan-card" class="cream-card card-3d-stack p-6 md:p-7 space-y-4">
+            <h3 class="text-xs md:text-sm font-bold uppercase tracking-wider text-[#6B4226] flex items-center gap-2">
+              <i data-lucide="list-checks" class="w-4 h-4 text-[#2E7D32]"></i>
+              Prioritized Action Plan
+            </h3>
+            <div id="actionable-suggestions-container" class="space-y-3">
+            </div>
+          </div>
+
+          <!-- 7. Interactive Follow-Up Agent Chat -->
+          <div id="chat-card" class="cream-card card-3d-stack p-6 md:p-7 space-y-4 border-[#C88A58]/40 bg-[#FFFDF9]">
+            <div class="flex flex-col sm:flex-row sm:items-center justify-between gap-3">
+              <div class="flex items-center gap-2">
+                <i data-lucide="message-square-code" class="w-4 h-4 text-[#C88A58]"></i>
+                <h3 class="text-xs md:text-sm font-bold uppercase tracking-wider text-[#8D5B4C]">
+                  Ask Agent Follow-Up Questions
+                </h3>
+              </div>
+              <div class="flex items-center gap-2">
+                <button id="btn-open-canvas-from-chat" type="button" class="px-3 py-1.5 rounded-xl bg-gradient-to-r from-[#8D5B4C] to-[#C88A58] hover:opacity-95 text-white text-xs font-bold flex items-center gap-1.5 shadow-sm transition">
+                  <i data-lucide="git-fork" class="w-3.5 h-3.5"></i>
+                  <span>GraphMind Canvas</span>
+                </button>
+                <span class="text-[10px] px-2.5 py-0.5 rounded-full bg-[#F5EFEB] text-[#8D5B4C] border border-[#E2D7C5] font-semibold hidden md:inline">Remembers Chat History</span>
+              </div>
+            </div>
+
+            <div class="flex flex-wrap gap-2 text-xs" id="chat-quick-suggestions">
+              <button class="chat-chip px-3 py-1.5 rounded-full bg-[#F5EFEB] hover:bg-[#EFE8DD] text-[#6B4226] border border-[#E2D7C5] transition text-[11px] font-medium shadow-sm">
+                How do I answer "Tell me about yourself" for this company?
+              </button>
+              <button class="chat-chip px-3 py-1.5 rounded-full bg-[#F5EFEB] hover:bg-[#EFE8DD] text-[#6B4226] border border-[#E2D7C5] transition text-[11px] font-medium shadow-sm">
+                What 3 tough interview questions will they ask based on my gaps?
+              </button>
+              <button class="chat-chip px-3 py-1.5 rounded-full bg-[#F5EFEB] hover:bg-[#EFE8DD] text-[#6B4226] border border-[#E2D7C5] transition text-[11px] font-medium shadow-sm">
+                Rewrite my summary to highlight system design
+              </button>
+            </div>
+
+            <div id="chat-messages" class="h-72 overflow-y-auto space-y-3.5 p-4 rounded-2xl bg-[#FAF7F2] border border-[#E2D7C5] text-xs">
+              <div class="flex items-start gap-2.5 text-[#291E1A]">
+                <div class="w-7 h-7 rounded-full bg-[#8D5B4C] text-white flex items-center justify-center flex-shrink-0 text-[10px] font-bold shadow-sm">AI</div>
+                <div class="p-3.5 rounded-2xl bg-white border border-[#E2D7C5] max-w-xl shadow-sm leading-relaxed">
+                  Hello! I've analyzed your resume against the target role. What would you like to drill into? You can ask me how to answer interview questions, request custom bullet rewrites, or discuss how to position your skills.
+                </div>
+              </div>
+            </div>
+
+            <form id="chat-form" class="flex gap-2.5">
+              <input type="text" id="chat-input" class="flex-1 bg-[#FAF7F2] border border-[#E2D7C5] focus:border-[#C88A58] focus:bg-white rounded-xl px-4 py-3 text-xs text-[#291E1A] outline-none transition shadow-inner" placeholder="Ask a follow-up (e.g., 'How do I pitch my lack of Kubernetes experience?')...">
+              <button type="submit" id="btn-chat-send" data-magnetic="true" class="px-5 py-3 rounded-xl btn-caramel text-white text-xs font-bold flex items-center gap-1.5 transition">
+                <i data-lucide="send" class="w-3.5 h-3.5"></i>
+                Send
+              </button>
+            </form>
+          </div>
+
+        </div> <!-- /results-container -->
+
+      </section>
+
+    </main>
+
+  </div> <!-- /agent-view -->
+
+  <!-- ========================================================================
+       VIEW 3: GRAPHMIND INTERACTIVE CANVAS CHAT (DAG 2D WHITEBOARD)
+       ======================================================================== -->
+  <div id="canvas-view" class="hidden">
+    <!-- Canvas Top Header Bar -->
+    <header class="h-14 border-b border-[#E2D7C5] bg-[#FAF7F2]/90 backdrop-blur-md px-4 md:px-6 flex items-center justify-between z-40 flex-shrink-0">
+      <div class="flex items-center gap-3">
+        <button id="btn-canvas-back" class="px-3 py-1.5 rounded-xl bg-[#FAF7F2] hover:bg-[#F5EFEB] text-[#6B4226] border border-[#E2D7C5] text-xs font-bold transition flex items-center gap-1.5 shadow-sm">
+          <i data-lucide="arrow-left" class="w-3.5 h-3.5 text-[#8D5B4C]"></i>
+          <span id="canvas-back-text">Back to Workspace</span>
+        </button>
+        <div class="w-px h-5 bg-[#E2D7C5]"></div>
+        <div class="flex items-center gap-2">
+          <div class="w-7 h-7 rounded-lg bg-gradient-to-tr from-[#8D5B4C] to-[#C88A58] text-white flex items-center justify-center text-xs shadow-sm shadow-[#8D5B4C]/25">
+            <i data-lucide="git-fork" class="w-4 h-4"></i>
+          </div>
+          <span class="font-serif-title font-extrabold text-sm text-[#291E1A] tracking-tight">GraphMind <span class="italic text-[#8D5B4C]">Canvas Chat</span></span>
+        </div>
+      </div>
+
+      <!-- Telemetry & Controls in Header -->
+      <div class="flex items-center gap-2 sm:gap-3">
+        <div class="hidden sm:flex items-center gap-2 text-[11px] font-mono">
+          <span class="px-2.5 py-1 rounded-full bg-[#F5EFEB] text-[#8D5B4C] border border-[#E2D7C5] font-semibold flex items-center gap-1">
+            <i data-lucide="network" class="w-3 h-3"></i>
+            <span id="canvas-node-count">0 Nodes</span>
+          </span>
+          <span class="px-2.5 py-1 rounded-full bg-[#EAF4EC] text-[#2E7D32] border border-[#2E7D32]/25 font-semibold flex items-center gap-1">
+            <i data-lucide="cpu" class="w-3 h-3"></i>
+            <span id="canvas-est-tokens">Branch-Isolated Context</span>
+          </span>
+        </div>
+
+        <button id="btn-toggle-history-panel" class="px-3 py-1.5 rounded-xl bg-[#F5EFEB] hover:bg-[#EFE8DD] text-[#6B4226] border border-[#E2D7C5] text-xs font-bold transition flex items-center gap-1.5 shadow-sm" title="Toggle History Tree">
+          <i data-lucide="list-tree" class="w-3.5 h-3.5 text-[#8D5B4C]"></i>
+          <span class="hidden sm:inline">Tree History</span>
+        </button>
+
+        <button id="canvas-theme-toggle-btn" class="p-2 rounded-xl border border-[#E2D7C5] bg-[#F5EFEB] hover:bg-[#EFE8DD] text-[#6B4226] transition flex items-center justify-center shadow-sm" title="Toggle Day / Night Mode">
+          <i data-lucide="moon" id="canvas-theme-icon" class="w-4 h-4"></i>
+        </button>
+      </div>
+    </header>
+
+    <!-- Canvas Stage (Infinite Viewport) -->
+    <div id="canvas-stage">
+      <!-- Transform Plane (10,000px x 10,000px) -->
+      <div id="canvas-plane" style="transform: translate(0px, 0px) scale(1);">
+        <!-- SVG Bézier Connector Engine Overlay -->
+        <svg id="canvas-svg">
+          <defs>
+            <marker id="arrowhead" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="6" markerHeight="6" orient="auto">
+              <path d="M 0 1 L 10 5 L 0 9 z" fill="#C88A58" />
+            </marker>
+          </defs>
+          <g id="canvas-svg-connectors"></g>
+        </svg>
+
+        <!-- Nodes Container -->
+        <div id="canvas-nodes-container"></div>
+      </div>
+
+      <!-- Left Floating Toolbar -->
+      <div class="canvas-toolbar-left" aria-label="Canvas Tools">
+        <button type="button" class="canvas-tool-btn active" id="tool-pointer" title="Pointer (Select & Drag Nodes)">
+          <i data-lucide="mouse-pointer" class="w-4 h-4"></i>
+        </button>
+        <button type="button" class="canvas-tool-btn" id="tool-add-root" title="Add New Root Query (+)">
+          <i data-lucide="plus-circle" class="w-4 h-4 text-[#8D5B4C]"></i>
+        </button>
+        <button type="button" class="canvas-tool-btn" id="tool-autolayout" title="Auto-Organize DAG (BFS Layout)">
+          <i data-lucide="layout-grid" class="w-4 h-4 text-[#C88A58]"></i>
+        </button>
+        <div class="w-5 h-px bg-[#E2D7C5] mx-auto"></div>
+        <button type="button" class="canvas-tool-btn" id="tool-clear-canvas" title="Clear Canvas (Reset DAG)">
+          <i data-lucide="trash-2" class="w-4 h-4 text-red-500"></i>
+        </button>
+      </div>
+
+      <!-- Bottom-Right Viewport Dock -->
+      <div class="canvas-dock-bottom-right" aria-label="Viewport Controls">
+        <button type="button" class="dock-item !w-8 !h-8" id="btn-canvas-zoom-in" title="Zoom In (Ctrl + Scroll)">
+          <i data-lucide="zoom-in" class="w-3.5 h-3.5"></i>
+        </button>
+        <button type="button" class="dock-item !w-8 !h-8" id="btn-canvas-zoom-out" title="Zoom Out">
+          <i data-lucide="zoom-out" class="w-3.5 h-3.5"></i>
+        </button>
+        <span id="canvas-zoom-badge" class="text-[10px] font-mono font-bold px-1.5 text-[#786B63]">100%</span>
+        <div class="w-px h-4 bg-[#E2D7C5]"></div>
+        <button type="button" class="dock-item !w-8 !h-8" id="btn-canvas-recenter" title="Recenter to Active Tree (✢)">
+          <i data-lucide="move" class="w-3.5 h-3.5 text-[#8D5B4C]"></i>
+        </button>
+        <button type="button" class="dock-item !w-8 !h-8" id="btn-canvas-reset" title="Reset View (⊙)">
+          <i data-lucide="locate-fixed" class="w-3.5 h-3.5 text-[#C88A58]"></i>
+        </button>
+      </div>
+
+      <!-- Top-Right Searchable History Tree Panel -->
+      <div class="canvas-history-panel collapsed" id="canvas-history-panel">
+        <div class="p-3.5 border-b border-[#E2D7C5] flex items-center justify-between">
+          <div class="flex items-center gap-2">
+            <i data-lucide="history" class="w-4 h-4 text-[#8D5B4C]"></i>
+            <span class="text-xs font-bold text-[#291E1A]">Branch Exploration History</span>
+          </div>
+          <button id="btn-close-history" class="p-1 text-[#786B63] hover:text-[#291E1A]">
+            <i data-lucide="x" class="w-4 h-4"></i>
+          </button>
+        </div>
+        <div class="p-2.5 border-b border-[#E2D7C5]">
+          <input type="text" id="canvas-search-history" placeholder="Filter questions & answers..." class="w-full text-xs px-3 py-1.5 rounded-lg bg-[#FAF7F2] border border-[#E2D7C5] outline-none">
+        </div>
+        <div id="canvas-history-list" class="flex-1 overflow-y-auto p-2 space-y-1.5 text-xs max-h-80">
+          <p class="text-[11px] text-[#786B63] p-2 text-center italic">No dialogue nodes yet.</p>
+        </div>
+      </div>
+
+      <!-- Empty State (Shown when nodes.length === 0) -->
+      <div id="canvas-empty-state" class="cream-card p-8 md:p-10 space-y-5 border border-[#C88A58]/35 absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 z-30 w-[92%] max-w-lg shadow-2xl">
+        <div class="w-14 h-14 rounded-2xl bg-gradient-to-tr from-[#8D5B4C] to-[#C88A58] text-white flex items-center justify-center mx-auto shadow-md shadow-[#8D5B4C]/25">
+          <i data-lucide="git-fork" class="w-7 h-7"></i>
+        </div>
+        <div class="space-y-1 text-center">
+          <h3 class="text-lg font-bold font-serif-title text-[#291E1A]">Start Your Preparation Journey</h3>
+          <p class="text-xs text-[#786B63] leading-relaxed">
+            Unlike traditional linear chat, you can branch conversations into infinite directions. Ask anything or pick a seed prompt below:
+          </p>
+        </div>
+
+        <form id="canvas-empty-form" class="space-y-3">
+          <textarea id="canvas-empty-input" rows="3" class="w-full text-xs p-3 rounded-xl bg-[#FAF7F2] border border-[#E2D7C5] focus:border-[#C88A58] outline-none shadow-inner" placeholder="Type your opening question (e.g. 'How should I position my system design experience?')..."></textarea>
+          <button type="submit" class="w-full py-2.5 rounded-xl btn-caramel text-xs font-bold flex items-center justify-center gap-2">
+            <i data-lucide="sparkles" class="w-3.5 h-3.5 text-amber-200"></i>
+            <span>Plant Root Discussion Node</span>
+          </button>
+        </form>
+
+        <div class="space-y-2 pt-1 border-t border-[#E2D7C5]">
+          <span class="text-[10px] font-mono uppercase font-bold text-[#8D5B4C] block text-center">Quick Topic Starters:</span>
+          <div class="flex flex-wrap gap-1.5 justify-center" id="canvas-seed-chips">
+            <button type="button" class="canvas-chip text-[11px] px-2.5 py-1 rounded-full bg-[#F5EFEB] hover:bg-[#EFE8DD] text-[#6B4226] border border-[#E2D7C5] transition">
+              How do I answer "Tell me about yourself"?
+            </button>
+            <button type="button" class="canvas-chip text-[11px] px-2.5 py-1 rounded-full bg-[#F5EFEB] hover:bg-[#EFE8DD] text-[#6B4226] border border-[#E2D7C5] transition">
+              Rewrite my payment microservices bullet
+            </button>
+            <button type="button" class="canvas-chip text-[11px] px-2.5 py-1 rounded-full bg-[#F5EFEB] hover:bg-[#EFE8DD] text-[#6B4226] border border-[#E2D7C5] transition">
+              What 3 tough interview questions will they ask?
+            </button>
+            <button type="button" class="canvas-chip text-[11px] px-2.5 py-1 rounded-full bg-[#F5EFEB] hover:bg-[#EFE8DD] text-[#6B4226] border border-[#E2D7C5] transition">
+              2-week study plan to bridge missing skills
+            </button>
+          </div>
+        </div>
+      </div>
+
+      <!-- Dynamic Branch Follow-up Popover (Appears under active node) -->
+      <div id="canvas-branch-popover" class="canvas-branch-popover hidden">
+        <div class="flex items-center justify-between border-b border-[#E2D7C5] pb-2">
+          <span class="text-xs font-bold text-[#8D5B4C] flex items-center gap-1.5">
+            <i data-lucide="git-branch" class="w-3.5 h-3.5"></i>
+            Branch Follow-up
+          </span>
+          <button type="button" id="btn-close-branch-popover" class="text-[#786B63] hover:text-[#291E1A]">
+            <i data-lucide="x" class="w-4 h-4"></i>
+          </button>
+        </div>
+        <p class="text-[11px] text-[#786B63]">Gemini will receive context strictly along this branch ancestor chain:</p>
+        <textarea id="canvas-branch-input" rows="3" class="w-full text-xs p-2.5 rounded-xl bg-[#FAF7F2] border border-[#E2D7C5] focus:border-[#C88A58] outline-none" placeholder="Ask a targeted follow-up to this answer..."></textarea>
+        
+        <div class="flex flex-wrap gap-1" id="canvas-branch-suggestions"></div>
+
+        <div class="flex items-center justify-end gap-2 pt-1">
+          <button type="button" id="btn-cancel-branch" class="px-3 py-1.5 text-xs text-[#786B63] hover:text-[#291E1A]">Cancel</button>
+          <button type="button" id="btn-submit-branch" class="px-4 py-1.5 rounded-xl btn-caramel text-xs font-bold flex items-center gap-1.5 shadow-sm">
+            <span>Branch Now</span>
+            <i data-lucide="send" class="w-3 h-3"></i>
+          </button>
+        </div>
+      </div>
+
+    </div> <!-- /canvas-stage -->
+  </div> <!-- /canvas-view -->
+
+  <!-- ========================================================================
+       FLOATING / STICKY DYNAMIC ISLAND (DOCK)
+       Centered persistently at bottom of viewport
+       ======================================================================== -->
+  <nav class="dynamic-island-dock" id="floating-dock" aria-label="Dynamic Island Dock">
+    <button type="button" class="dock-item active" data-action="go-landing" title="Landing Overview">
+      <i data-lucide="home" class="w-4 h-4"></i>
+      <span class="dock-tooltip">Overview</span>
+    </button>
+    <button type="button" class="dock-item" data-action="go-deck" title="3D Capabilities Deck">
+      <i data-lucide="layers" class="w-4 h-4"></i>
+      <span class="dock-tooltip">3D Capabilities</span>
+    </button>
+    <button type="button" class="dock-item" data-action="go-widgets" title="Live Micro-Widgets">
+      <i data-lucide="sliders" class="w-4 h-4"></i>
+      <span class="dock-tooltip">Micro-Widgets</span>
+    </button>
+    <button type="button" class="dock-item" data-action="go-agent" title="Launch Agent Workspace">
+      <i data-lucide="zap" class="w-4 h-4 text-amber-300"></i>
+      <span class="dock-tooltip">Interact with Agent</span>
+    </button>
+    <button type="button" class="dock-item" data-action="go-canvas" title="GraphMind Canvas Chat">
+      <i data-lucide="git-fork" class="w-4 h-4 text-[#C88A58]"></i>
+      <span class="dock-tooltip">Canvas Chat</span>
+    </button>
+    <div class="w-px h-5 bg-[#E2D7C5] mx-0.5"></div>
+    <button type="button" class="dock-item" id="dock-theme-toggle" title="Toggle Day / Night Mode">
+      <i data-lucide="moon" id="dock-theme-icon" class="w-4 h-4"></i>
+      <span class="dock-tooltip">Day / Night</span>
+    </button>
+  </nav>
+
+  <!-- ========================================================================
+       FREEFORM DRAGGABLE CANVAS WIDGET
+       ======================================================================== -->
+  <aside id="draggable-widget" class="draggable-canvas-widget hidden md:block" aria-label="Quick Score Inspector">
+    <div class="drag-handle bg-[#FAF7F2] rounded-t-2xl">
+      <div class="flex items-center gap-2">
+        <i data-lucide="grip-vertical" class="w-3.5 h-3.5 text-[#8D5B4C]"></i>
+        <span class="text-[11px] font-bold text-[#291E1A]">Floating Canvas Note</span>
+      </div>
+      <button type="button" id="widget-toggle-btn" class="text-[#786B63] hover:text-[#291E1A] p-0.5" title="Minimize/Maximize">
+        <i data-lucide="minus" class="w-3.5 h-3.5"></i>
+      </button>
+    </div>
+    <div id="widget-body" class="p-4 space-y-3 text-xs">
+      <div class="flex items-center justify-between">
+        <span class="text-[#786B63]">Agent Status:</span>
+        <span class="font-extrabold text-[#2E7D32]">Online & Ready</span>
+      </div>
+      <div class="flex items-center justify-between">
+        <span class="text-[#786B63]">Last Evaluated:</span>
+        <span id="widget-match-score" class="font-extrabold text-sm text-[#8D5B4C]">Ready</span>
+      </div>
+      <div class="pt-2 border-t border-[#E2D7C5] flex items-center justify-between text-[11px]">
+        <span class="text-[#786B63]">Gemini Model:</span>
+        <span class="font-mono font-bold text-[#6B4226]">3.5 Flash Lite</span>
+      </div>
+      <p class="text-[10px] text-[#A3968C] italic">💡 Drag this note anywhere across your desktop!</p>
+    </div>
+  </aside>
+
+  <!-- Frontend Logic -->
+  <script src="/static/app.js"></script>
+</body>
+</html>
