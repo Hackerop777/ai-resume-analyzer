@@ -24,7 +24,7 @@ Job seekers and candidates struggle to understand why their resumes fail applica
 ### 2. ⚡ 5ms Zero-Token Deterministic ATS Audit
 - **Metric Density %**: Instantly computes the ratio of bullets containing hard numbers, percentages, and scale metrics vs total bullets.
 - **Weak Action Verb Flagging**: Detects passive phrases (
-esponsible for, ssisted, helped, participated in) before touching the LLM.
+responsible for, assisted, helped, participated in) before touching the LLM.
 - **Contact Completeness**: Universally verifies email, phone, LinkedIn, and GitHub links.
 
 ### 3. 🎯 Grounded Match Scoring (0–100%)
